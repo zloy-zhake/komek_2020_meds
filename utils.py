@@ -22,13 +22,7 @@ def get_shortest_medication_name_len() -> int:
     """TODO:
     """
     with open(file="./data/medications.txt", mode="r") as f:
-        min_len = 100
-        for line in f:
-            tmp_len = len(line.strip())
-            if tmp_len < min_len:
-                min_len = tmp_len
-
-        return min_len
+        return min(len(x.strip()) for x in f)
 
 
 SHORTES_MEDICATION_NAME_LEN = get_shortest_medication_name_len()
