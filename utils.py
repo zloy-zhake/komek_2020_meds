@@ -1,6 +1,6 @@
 import re
 from typing import List
-from fuzzywuzzy import process
+from fuzzywuzzy import process, fuzz
 
 # smartness levels:
 SIMPLE_MATCHING: int = 0
@@ -112,12 +112,13 @@ def get_medications_list_from_text(
         )
 
     elif smartness == FUZZY_WUZZY_MATCING:
-        for medication in MEDICATIONS_SET:
-            search_res = process.extractBests(
-                query=medication, choices=preprocessed_words, score_cutoff=90
+        for word in preprocessed_words:
+            search_res = process.extractOne(
+                query=word, choices=MEDICATIONS_SET, scorer=fuzz.token_set_ratio
             )
-            if len(search_res) > 0:
-                result_meds.append(medication)
+            if search_res and search_res[1] > 86:
+                if search_res[0] not in result_meds:
+                    result_meds.append(search_res[0])
 
     elif smartness == NER:
         pass
